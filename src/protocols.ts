@@ -35,3 +35,7 @@ export type BookingResponse = {
   id: number,
   Room: object
 }
+
+export type BookingDoneResponse = {
+  bookingId: number
+}
