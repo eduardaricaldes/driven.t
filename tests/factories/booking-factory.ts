@@ -1,4 +1,3 @@
-import { Booking } from "@prisma/client";
 import { createHotel, createRoomWithHotelId } from "./";
 import { prisma } from "@/config";
 
