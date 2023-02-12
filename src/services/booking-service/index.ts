@@ -6,10 +6,13 @@ import {
   notFoundError,
   roomIsFullError,
   roomNotFoundError,
+  userHasntBookingError,
+  userNotFoundBookingError,
 } from "@/errors";
 import bookingRepository from "@/repositories/booking-repository";
 import { TicketStatus } from "@prisma/client";
 import roomRepository from "@/repositories/room-repository";
+import userRepository from "@/repositories/user-repository";
 
 async function getBooking(userId: number): Promise<BookingResponse> {
   const result = await bookingRepository.getBooking(userId);
@@ -51,9 +54,37 @@ async function createBooking(userId: number, roomId: number): Promise<BookingDon
   return resposeBookingDone;
 }
 
+async function updateBooking(userId: number, roomId: number, bookingId: number): Promise<BookingDoneResponse> {
+  const room = await roomRepository.findRoomById(roomId);
+  if(!room) {
+    throw roomNotFoundError();
+  }
+
+  if (room.capacity === 0) {
+    throw roomIsFullError();
+  }
+
+  const user = await userRepository.getUserById(userId);
+  if(user.Booking.length === 0) {
+    throw userHasntBookingError();
+  }
+
+  const booking = await bookingRepository.getBookingByIdAndUserId(bookingId, userId);
+  if(!booking) {
+    throw userNotFoundBookingError();
+  }
+
+  await bookingRepository.update(roomId, booking.id);
+
+  return {
+    bookingId: booking.id
+  };
+}
+
 const bookingService = {
   getBooking,
   createBooking,
+  updateBooking
 };
 
 export default bookingService;

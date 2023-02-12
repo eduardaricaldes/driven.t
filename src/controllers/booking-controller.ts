@@ -1,6 +1,5 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "@/middlewares";
-import { ApplicationBookingError, bookingRulesError, roomIsFullError, roomNotFoundError } from "@/errors";
 import httpStatus from "http-status";
 import bookingService from "@/services/booking-service";
 
@@ -21,6 +20,19 @@ export async function booking(req: AuthenticatedRequest, res: Response) {
 
   try {
     const createdBooking = await bookingService.createBooking(userId, body.roomId);
+
+    return res.status(httpStatus.OK).send(createdBooking);
+  } catch (error) {
+    return res.sendStatus(error.status);
+  }
+}
+
+export async function updateBooking(req: AuthenticatedRequest, res: Response) {
+  const { userId, body, params } = req;
+
+  try {
+    const bookingId = parseInt(params.bookingId);
+    const createdBooking = await bookingService.updateBooking(userId, body.roomId, bookingId);
 
     return res.status(httpStatus.OK).send(createdBooking);
   } catch (error) {

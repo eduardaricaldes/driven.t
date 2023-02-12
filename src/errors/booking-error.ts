@@ -17,6 +17,22 @@ export function roomIsFullError(): ApplicationBookingError {
   };
 }
 
+export function userHasntBookingError(): ApplicationBookingError {
+  return {
+    name: "BookingError",
+    message: "User hasen't booking to update",
+    status: httpStatus.FORBIDDEN,
+  };
+}
+
+export function userNotFoundBookingError(): ApplicationBookingError {
+  return {
+    name: "BookingError",
+    message: "Not found booking for this user",
+    status: httpStatus.FORBIDDEN,
+  };
+}
+
 export function bookingRulesError(): ApplicationBookingError {
   return {
     name: "BookingError",
